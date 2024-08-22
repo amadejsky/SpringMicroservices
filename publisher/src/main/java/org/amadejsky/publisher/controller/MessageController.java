@@ -1,6 +1,6 @@
-package org.amadejsky.publisher;
+package org.amadejsky.publisher.controller;
 
-import org.amadejsky.notification.Notification;
+import org.amadejsky.publisher.model.Notification;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.web.bind.annotation.*;
 

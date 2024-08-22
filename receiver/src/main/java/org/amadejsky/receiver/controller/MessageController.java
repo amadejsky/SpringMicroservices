@@ -1,8 +1,10 @@
-package org.amadejsky.receiver;
+package org.amadejsky.receiver.controller;
 
-import org.amadejsky.notification.Notification;
+
+import org.amadejsky.receiver.model.Notification;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -30,9 +32,10 @@ public class MessageController {
 //    }
     @GetMapping("/notification")
     public ResponseEntity<Notification> receivedNotification(){
-        Object notification = rabbitTemplate.receiveAndConvert("test");
-        if(notification instanceof Notification){
-            return ResponseEntity.ok((Notification)notification);
+        Notification notification = rabbitTemplate
+                .receiveAndConvert("test", ParameterizedTypeReference.forType(Notification.class));
+        if(notification != null){
+            return ResponseEntity.ok(notification);
         }
         return ResponseEntity.noContent().build();
     }
