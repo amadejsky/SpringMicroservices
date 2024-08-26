@@ -30,6 +30,7 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public Student addStudent(Student student) {
+        validate(student);
         return studentRepository.save(student);
     }
 
@@ -44,11 +45,18 @@ public class StudentServiceImpl implements StudentService {
     public Student putStudent(Long id, Student student) {
         return studentRepository.findById(id)
                 .map(studentCurrent -> {
+                    validate(student);
                     studentCurrent.setFirstName(student.getFirstName());
                     studentCurrent.setLastName(student.getLastName());
                     studentCurrent.setEmail(student.getEmail());
                     return studentRepository.save(studentCurrent);
                 }).orElseThrow(()->new StudentException(StudentError.STUDENT_NOT_FOUND));
+    }
+
+    private void validate(Student student) {
+        if(studentRepository.existsByEmail(student.getEmail())){
+            throw new StudentException(StudentError.STUDENT_EMAIL_ALREADY_IN_USE);
+        }
     }
 
     @Override

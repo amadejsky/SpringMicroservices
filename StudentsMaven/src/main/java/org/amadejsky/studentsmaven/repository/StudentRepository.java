@@ -11,11 +11,14 @@ import java.util.List;
 @Repository
 public interface StudentRepository extends JpaRepository<Student,Long> {
 
-    List<Student> findByLastName(String lastName, Pageable pageable);
+    boolean existsByEmail(String email);
 
-    List<Student> findByLastNameAndFirstNameIsNotLikeAllIgnoreCase(String lastName, String firstName);
+//    List<Student> findByLastName(String lastName, Pageable pageable);
+//
+//    List<Student> findByLastNameAndFirstNameIsNotLikeAllIgnoreCase(String lastName, String firstName);
 
-    @Query("Select s from Student s where s.firstName = 'Marian'")
-    List<Student> findStudentsWithNameMarian();
+
+//    @Query("Select s from Student s where s.firstName = 'Marian'")
+//    List<Student> findStudentsWithNameMarian();
 
 }

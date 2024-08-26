@@ -8,6 +8,7 @@ import jakarta.validation.constraints.NotNull;
 
 @Entity
 @SequenceGenerator(name="seqIdGen", initialValue = 20000, allocationSize = 1)
+//@Table(name="students")
 public class Student {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seqIdGen")
