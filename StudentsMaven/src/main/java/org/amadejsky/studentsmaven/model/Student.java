@@ -20,6 +20,22 @@ public class Student {
     @NotBlank
     @Column(unique = true)
     private String email;
+    @Enumerated(EnumType.STRING)
+    @NotNull
+    private Status status;
+
+    public enum Status{
+        ACTIVE,
+        INACTIVE
+    }
+
+    public Status getStatus() {
+        return status;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
+    }
 
     public String getFirstName() {
         return firstName;

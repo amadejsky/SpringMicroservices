@@ -33,8 +33,8 @@ public class StudentController {
 
     //    @RequestMapping(value = "/hello",method = RequestMethod.GET)
     @GetMapping()
-    public List<Student> getStudents() {
-        return studentService.getStudents();
+    public List<Student> getStudents(@RequestParam(required = false) Student.Status status) {
+        return studentService.getStudents(status);
     }
 
     @PostMapping()
