@@ -18,7 +18,9 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    public List<Course> getCourses() {
+    public List<Course> getCourses(Course.Status status) {
+        if(status!=null)
+            return courseRepository.findAllByStatus(status);
         return courseRepository.findAll();
     }
 

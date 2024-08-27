@@ -1,6 +1,8 @@
 package org.amadejsky.courses.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -28,6 +30,15 @@ public class Course {
     @NotNull
     @Min(0)
     private Long getParticipantsCounter;
+    @Enumerated(EnumType.STRING)
+    @NotNull
+    private Status status;
+
+    public enum Status{
+        ACTIVE,
+        INACTIVE,
+        FULL
+    }
 
     public String getCode() {
         return code;
