@@ -7,12 +7,18 @@ import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import lombok.Getter;
+import lombok.Setter;
+import org.amadejsky.courses.exception.CourseError;
+import org.amadejsky.courses.exception.CourseException;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDateTime;
 
 @Document
+@Getter
+@Setter
 public class Course {
     @Id
     private String code;
@@ -39,68 +45,32 @@ public class Course {
         INACTIVE,
         FULL
     }
-
-    public Status getStatus() {
-        return status;
+    public void validate(){
+        validateParticipantsLimit();
+        validateCourseDate();
+        validateStatus();
+        validateActive();
+    }
+    private void validateActive(){
+        if(getParticipantsLimit().equals(getGetParticipantsCounter()) && Status.ACTIVE.equals(status)){
+            throw new CourseException(CourseError.COURSE_ACTIVE_ERROR);
+        }
+    }
+    private void validateCourseDate(){
+        if(startDate.isAfter(endDate)){
+            throw new CourseException(CourseError.COURSE_START_DATE_INVALID);
+        }
+    }
+    private void validateParticipantsLimit(){
+        if(getParticipantsLimit()<getParticipantsCounter){
+            throw new CourseException(CourseError.COURSE_PARTICIPANTS_AMOUNT_EXCEEEDED);
+        }
+    }
+    private void validateStatus(){
+        if(Status.FULL.equals(status)&& !getParticipantsCounter.equals(participantsLimit)){
+            throw new CourseException(CourseError.COURSE_STATUS_ERROR);
+        }
     }
 
-    public void setStatus(Status status) {
-        this.status = status;
-    }
 
-    public String getCode() {
-        return code;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public LocalDateTime getStartDate() {
-        return startDate;
-    }
-
-    public void setStartDate(LocalDateTime startDate) {
-        this.startDate = startDate;
-    }
-
-    public LocalDateTime getEndDate() {
-        return endDate;
-    }
-
-    public void setEndDate(LocalDateTime endDate) {
-        this.endDate = endDate;
-    }
-
-    public Long getParticipantsLimit() {
-        return participantsLimit;
-    }
-
-    public void setParticipantsLimit(Long participantsLimit) {
-        this.participantsLimit = participantsLimit;
-    }
-
-    public Long getGetParticipantsCounter() {
-        return getParticipantsCounter;
-    }
-
-    public void setGetParticipantsCounter(Long getParticipantsCounter) {
-        this.getParticipantsCounter = getParticipantsCounter;
-    }
 }

@@ -4,10 +4,16 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
 
 @Entity
 @SequenceGenerator(name="seqIdGen", initialValue = 20000, allocationSize = 1)
+@Getter
+@Setter
+@ToString
 //@Table(name="students")
 public class Student {
     @Id
@@ -29,35 +35,5 @@ public class Student {
         INACTIVE
     }
 
-    public Status getStatus() {
-        return status;
-    }
 
-    public void setStatus(Status status) {
-        this.status = status;
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
 }

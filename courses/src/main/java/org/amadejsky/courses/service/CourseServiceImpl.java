@@ -34,18 +34,19 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public Course addCourse(Course course) {
-        if(course.getStartDate().isBefore(LocalDateTime.now())){
-            throw new CourseException(CourseError.COURSE_START_DATE_INVALID);
-        }
-        course.setStartDate(course.getStartDate());
-        if(course.getEndDate().isBefore(course.getStartDate())){
-            throw new CourseException(CourseError.COURSE_END_DATE_INVALID);
-        }
-        course.setEndDate(course.getEndDate());
-        course.setParticipantsLimit(course.getParticipantsLimit());
-        if(course.getGetParticipantsCounter()>course.getParticipantsLimit()){
-            throw new CourseException(CourseError.COURSE_PARTICIPANTS_AMOUNT_EXCEEEDED);
-        }
+//        if(course.getStartDate().isBefore(LocalDateTime.now())){
+//            throw new CourseException(CourseError.COURSE_START_DATE_INVALID);
+//        }
+//        course.setStartDate(course.getStartDate());
+//        if(course.getEndDate().isBefore(course.getStartDate())){
+//            throw new CourseException(CourseError.COURSE_END_DATE_INVALID);
+//        }
+//        course.setEndDate(course.getEndDate());
+//        course.setParticipantsLimit(course.getParticipantsLimit());
+//        if(course.getGetParticipantsCounter()>course.getParticipantsLimit()){
+//            throw new CourseException(CourseError.COURSE_PARTICIPANTS_AMOUNT_EXCEEEDED);
+//        }
+        course.validate();
         return courseRepository.save(course);
     }
 

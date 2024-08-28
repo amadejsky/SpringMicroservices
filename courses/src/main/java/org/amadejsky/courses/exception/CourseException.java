@@ -3,7 +3,7 @@ package org.amadejsky.courses.exception;
 public class CourseException extends RuntimeException{
     private CourseError courseError;
 
-    public CourseError getStudentError() {
+    public CourseError getCourseError() {
         return courseError;
     }
 

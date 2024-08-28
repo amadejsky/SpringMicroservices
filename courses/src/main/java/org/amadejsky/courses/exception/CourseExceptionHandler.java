@@ -10,12 +10,16 @@ public class CourseExceptionHandler {
     @ExceptionHandler(value = CourseException.class)
     public ResponseEntity<ErrorInfo> handleException(CourseException e){
         HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
-        if(e.getStudentError().equals(CourseError.COURSE_NOT_FOUND))
+        if(CourseError.COURSE_NOT_FOUND.equals(e.getCourseError()))
             httpStatus = HttpStatus.NOT_FOUND;
-        else if(e.getStudentError().equals(CourseError.COURSE_EMAIL_ALREADY_IN_USE))
-            httpStatus = HttpStatus.CONFLICT;
-        else if(CourseError.COURSE_ACCOUNT_IS_INACTIVE.equals(e.getStudentError()))
+        else if(CourseError.COURSE_END_DATE_INVALID.equals(e.getCourseError()))
             httpStatus = HttpStatus.BAD_REQUEST;
-        return ResponseEntity.status(httpStatus).body(new ErrorInfo(e.getStudentError().getMessage()));
+        else if(CourseError.COURSE_PARTICIPANTS_AMOUNT_EXCEEEDED.equals(e.getCourseError()))
+            httpStatus = HttpStatus.CONFLICT;
+        else if(CourseError.COURSE_STATUS_ERROR.equals(e.getCourseError()))
+            httpStatus = HttpStatus.CONFLICT;
+        else if(CourseError.COURSE_ACTIVE_ERROR.equals(e.getCourseError()))
+            httpStatus = HttpStatus.CONFLICT;
+        return ResponseEntity.status(httpStatus).body(new ErrorInfo(e.getCourseError().getMessage()));
     }
 }
