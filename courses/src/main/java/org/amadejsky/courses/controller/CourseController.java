@@ -23,8 +23,14 @@ public class CourseController {
     public Course addCourse(@Valid @RequestBody Course course){
         return courseService.addCourse(course);
     }
+
     @GetMapping("/{code}")
     public Course getCourse(@PathVariable String code){
         return courseService.getCourse(code);
+    }
+
+    @DeleteMapping("/{code}")
+    public void deleteStudent(@PathVariable String code){
+        courseService.deleteCourse(code);
     }
 }

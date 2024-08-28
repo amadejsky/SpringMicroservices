@@ -9,5 +9,9 @@ public interface CourseService {
     List<Course> getCourses(Course.Status status);
     Course getCourse(String id);
     Course addCourse(Course course);
+    void deleteCourse(String code);
+
+    Course putCourse(String id, Course course);
+    Course patchCourse(String id, Course course);
 
 }

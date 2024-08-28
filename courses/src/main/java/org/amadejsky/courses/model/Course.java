@@ -40,6 +40,14 @@ public class Course {
         FULL
     }
 
+    public Status getStatus() {
+        return status;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
+    }
+
     public String getCode() {
         return code;
     }
