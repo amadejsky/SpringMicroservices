@@ -3,6 +3,7 @@ package org.amadejsky.courses.service;
 import org.amadejsky.courses.exception.CourseError;
 import org.amadejsky.courses.exception.CourseException;
 import org.amadejsky.courses.model.Course;
+import org.amadejsky.courses.model.dto.Student;
 import org.amadejsky.courses.repository.CourseRepository;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
@@ -14,9 +15,11 @@ import java.util.Optional;
 @Service
 public class CourseServiceImpl implements CourseService {
     private final CourseRepository courseRepository;
+    private final StudentServiceClient studentServiceClient;
 
-    public CourseServiceImpl(CourseRepository courseRepository) {
+    public CourseServiceImpl(CourseRepository courseRepository, StudentServiceClient studentServiceClient) {
         this.courseRepository = courseRepository;
+        this.studentServiceClient = studentServiceClient;
     }
 
     @Override
@@ -122,5 +125,29 @@ public class CourseServiceImpl implements CourseService {
         courseFromDb.setStatus(course.getStatus());
         return courseRepository.save(courseFromDb);
     }
+
+    @Override
+    public void enrollStudent(Long studentId, String courseCode) {
+        Course course = getCourse(courseCode);
+        if(!Course.Status.ACTIVE.equals(course.getStatus())){
+            throw new CourseException(CourseError.COURSE_IS_NOT_ACTIVE);
+        }
+        if(course.getParticipantsLimit()<=course.getGetParticipantsCounter()){
+            throw new CourseException(CourseError.COURSE_PARTICIPANTS_AMOUNT_EXCEEEDED);
+        }
+        Student student = studentServiceClient.getStudentById(studentId);
+        if(!Course.Status.ACTIVE.equals(student.getStatus())){
+            throw new CourseException(CourseError.STUDENT_ACCOUNT_IS_INACTIVE);
+        }
+        if(course.getCourseMemberList().stream()
+                .anyMatch(member-> student.getEmail().equals(member.getEmail()))){
+            throw new CourseException(CourseError.STUDENT_ALREADY_ENROLLED);
+        }
+
+
+        course.setGetParticipantsCounter(course.getGetParticipantsCounter()+1);
+    }
+
+
 
 }

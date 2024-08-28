@@ -15,6 +15,8 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Document
 @Getter
@@ -39,6 +41,7 @@ public class Course {
     @Enumerated(EnumType.STRING)
     @NotNull
     private Status status;
+    private List<CourseMember> courseMemberList = new ArrayList<>();
 
     public enum Status{
         ACTIVE,
