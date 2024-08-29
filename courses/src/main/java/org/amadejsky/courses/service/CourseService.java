@@ -1,6 +1,7 @@
 package org.amadejsky.courses.service;
 
 import org.amadejsky.courses.model.Course;
+import org.amadejsky.courses.model.dto.StudentDto;
 
 import java.util.List;
 import java.util.Optional;
@@ -15,5 +16,7 @@ public interface CourseService {
     Course patchCourse(String id, Course course);
 
     void enrollStudent(Long studentId, String courseCode);
+
+    List<StudentDto> getCourseMemebers(String courseCode);
 
 }

@@ -1,7 +1,5 @@
 package org.amadejsky.courses.model.dto;
 
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
@@ -9,7 +7,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class Student {
+public class StudentDto {
     @NotBlank
     private String firstName;
     @NotBlank

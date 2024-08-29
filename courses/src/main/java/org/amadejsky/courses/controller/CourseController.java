@@ -1,8 +1,9 @@
 package org.amadejsky.courses.controller;
 
 import jakarta.validation.Valid;
+import jakarta.ws.rs.GET;
 import org.amadejsky.courses.model.Course;
-import org.amadejsky.courses.model.dto.Student;
+import org.amadejsky.courses.model.dto.StudentDto;
 import org.amadejsky.courses.service.CourseService;
 import org.amadejsky.courses.service.StudentServiceClient;
 import org.springframework.http.ResponseEntity;
@@ -55,5 +56,17 @@ public class CourseController {
         return ResponseEntity.ok().build();
     }
 
+//    @GetMapping("/{code}/members")
+//    public void getCourseMemebers(@PathVariable String code){
+//        courseService.getCourseMembers(code);
+//    }
+    @GetMapping("/emails")
+    public List<StudentDto> getStudentsByEmail(@RequestBody List<String> emails){
+        return studentServiceClient.getStudentsByEmail(emails);
+    }
+    @GetMapping("/{code}/members")
+    public List<StudentDto> getCourseMembers(@PathVariable String code){
+        return courseService.getCourseMemebers(code);
+    }
 
 }

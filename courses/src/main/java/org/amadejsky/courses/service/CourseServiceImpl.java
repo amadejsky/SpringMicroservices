@@ -4,14 +4,14 @@ import org.amadejsky.courses.exception.CourseError;
 import org.amadejsky.courses.exception.CourseException;
 import org.amadejsky.courses.model.Course;
 import org.amadejsky.courses.model.CourseMember;
-import org.amadejsky.courses.model.dto.Student;
+import org.amadejsky.courses.model.dto.StudentDto;
 import org.amadejsky.courses.repository.CourseRepository;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class CourseServiceImpl implements CourseService {
@@ -131,19 +131,29 @@ public class CourseServiceImpl implements CourseService {
     public void enrollStudent(Long studentId, String courseCode) {
         Course course = getCourse(courseCode);
         validateCourseStatus(course);
-        Student student = studentServiceClient.getStudentById(studentId);
-        validateStudentBeforeCourseEnrollment(student, course);
+        StudentDto studentDto = studentServiceClient.getStudentById(studentId);
+        validateStudentBeforeCourseEnrollment(studentDto, course);
         course.incrementParticipantNumber();
-        course.getCourseMemberList().add(new CourseMember(student.getEmail()));
+        course.getCourseMemberList().add(new CourseMember(studentDto.getEmail()));
         courseRepository.save(course);
     }
 
-    private static void validateStudentBeforeCourseEnrollment(Student student, Course course) {
-        if(!Student.Status.ACTIVE.equals(student.getStatus())){
+    @Override
+    public List<StudentDto> getCourseMemebers(String courseCode) {
+        Course course = getCourse(courseCode);
+        List<String> emailsMember = course.getCourseMemberList().stream()
+                .map(CourseMember::getEmail).collect(Collectors.toList());
+        return studentServiceClient.getStudentsByEmail(emailsMember);
+
+    }
+
+
+    private static void validateStudentBeforeCourseEnrollment(StudentDto studentDto, Course course) {
+        if(!StudentDto.Status.ACTIVE.equals(studentDto.getStatus())){
             throw new CourseException(CourseError.STUDENT_ACCOUNT_IS_INACTIVE);
         }
         if(course.getCourseMemberList().stream()
-                .anyMatch(member-> student.getEmail().equals(member.getEmail()))){
+                .anyMatch(member-> studentDto.getEmail().equals(member.getEmail()))){
             throw new CourseException(CourseError.STUDENT_ALREADY_ENROLLED);
         }
     }

@@ -37,6 +37,11 @@ public class StudentController {
         return studentService.getStudents(status);
     }
 
+    @PostMapping("/emails")
+    public List<Student> getStudentsByEmails(@RequestBody List<String> emails){
+        return studentService.getStudentsByEmails(emails);
+    }
+
     @PostMapping()
     @ResponseStatus(HttpStatus.CREATED)
     public Student addStudent(@RequestBody @Valid Student student) {
@@ -80,6 +85,8 @@ public class StudentController {
     public Student patchStudent(@PathVariable Long id, @RequestBody Student student){
         return studentService.patchStudent(id,student);
     }
+
+
 //    @GetMapping("/lastname")
 //    public List<Student> findAllByLastName(@RequestParam String lastName){
 //        return repository.findAll().stream()

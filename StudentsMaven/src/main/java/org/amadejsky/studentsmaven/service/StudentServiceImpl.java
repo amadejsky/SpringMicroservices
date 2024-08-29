@@ -9,6 +9,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 public class StudentServiceImpl implements StudentService {
     private final StudentRepository studentRepository;
@@ -90,5 +92,12 @@ public class StudentServiceImpl implements StudentService {
                     }
                     return studentRepository.save(studentCurrent);
                 }).orElseThrow(()->new StudentException(StudentError.STUDENT_NOT_FOUND));
+    }
+
+    @Override
+    public List<Student> getStudentsByEmails(List<String> emails) {
+//        return studentRepository.findAll().stream()
+//                .filter(student-> emails.contains(student.getEmail())).collect(Collectors.toList());
+        return studentRepository.findAllByEmailIn(emails);
     }
 }

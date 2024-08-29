@@ -1,5 +1,8 @@
 package org.amadejsky.courses.exception;
 
+import feign.Feign;
+import feign.FeignException;
+import org.json.JSONObject;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -22,10 +25,14 @@ public class CourseExceptionHandler {
             httpStatus = HttpStatus.CONFLICT;
         else if(CourseError.STUDENT_ACCOUNT_IS_INACTIVE.equals(e.getCourseError())
         || CourseError.COURSE_IS_NOT_ACTIVE.equals(e.getCourseError()))
-            httpStatus = httpStatus.BAD_REQUEST;
+            httpStatus = HttpStatus.BAD_REQUEST;
         else if(CourseError.STUDENT_ALREADY_ENROLLED.equals(e.getCourseError()))
-            httpStatus = httpStatus.CONFLICT;
+            httpStatus = HttpStatus.CONFLICT;
 
         return ResponseEntity.status(httpStatus).body(new ErrorInfo(e.getCourseError().getMessage()));
+    }
+    @ExceptionHandler(value = FeignException.class)
+    public ResponseEntity<?> handleFeignException(FeignException e){
+        return ResponseEntity.status(e.status()).body(new JSONObject(e.contentUTF8()).toMap());
     }
 }
