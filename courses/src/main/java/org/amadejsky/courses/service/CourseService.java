@@ -18,5 +18,6 @@ public interface CourseService {
     void enrollStudent(Long studentId, String courseCode);
 
     List<StudentDto> getCourseMemebers(String courseCode);
+    void finishEnroll(String courseCode);
 
 }

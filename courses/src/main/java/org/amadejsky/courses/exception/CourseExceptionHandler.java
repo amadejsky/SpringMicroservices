@@ -28,7 +28,8 @@ public class CourseExceptionHandler {
             httpStatus = HttpStatus.BAD_REQUEST;
         else if(CourseError.STUDENT_ALREADY_ENROLLED.equals(e.getCourseError()))
             httpStatus = HttpStatus.CONFLICT;
-
+        else if(CourseError.COURSE_ALREADY_FINISHED.equals(e.getCourseError()))
+            httpStatus = HttpStatus.CONFLICT;
         return ResponseEntity.status(httpStatus).body(new ErrorInfo(e.getCourseError().getMessage()));
     }
     @ExceptionHandler(value = FeignException.class)

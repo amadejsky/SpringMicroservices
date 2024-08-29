@@ -4,9 +4,11 @@ import org.amadejsky.courses.exception.CourseError;
 import org.amadejsky.courses.exception.CourseException;
 import org.amadejsky.courses.model.Course;
 import org.amadejsky.courses.model.CourseMember;
+import org.amadejsky.courses.model.dto.NotificationDto;
 import org.amadejsky.courses.model.dto.StudentDto;
 import org.amadejsky.courses.repository.CourseRepository;
 import org.apache.commons.lang.StringUtils;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -17,10 +19,12 @@ import java.util.stream.Collectors;
 public class CourseServiceImpl implements CourseService {
     private final CourseRepository courseRepository;
     private final StudentServiceClient studentServiceClient;
+    private final RabbitTemplate rabbitTemplate;
 
-    public CourseServiceImpl(CourseRepository courseRepository, StudentServiceClient studentServiceClient) {
+    public CourseServiceImpl(CourseRepository courseRepository, StudentServiceClient studentServiceClient, RabbitTemplate rabbitTemplate) {
         this.courseRepository = courseRepository;
         this.studentServiceClient = studentServiceClient;
+        this.rabbitTemplate = rabbitTemplate;
     }
 
     @Override
@@ -145,6 +149,42 @@ public class CourseServiceImpl implements CourseService {
                 .map(CourseMember::getEmail).collect(Collectors.toList());
         return studentServiceClient.getStudentsByEmail(emailsMember);
 
+    }
+
+    @Override
+    public void finishEnroll(String courseCode) {
+        Course course = getCourse(courseCode);
+        validateFinishEnrollment(course);
+        course.setStatus(Course.Status.INACTIVE);
+        courseRepository.save(course);
+
+        sendNotificationToRabbitMQ(course);
+    }
+
+    private void sendNotificationToRabbitMQ(Course course) {
+        NotificationDto notificationDto = createNotification(course);
+
+        rabbitTemplate.convertAndSend("enrollment_finish", notificationDto);
+    }
+
+    private static NotificationDto createNotification(Course course) {
+        List<String> emailsMember = course.getCourseMemberList().stream()
+                .map(CourseMember::getEmail).collect(Collectors.toList());
+        NotificationDto notificationDto = NotificationDto.builder()
+                        .courseCode(course.getCode())
+                                .courseName(course.getName())
+                                        .courseDescription(course.getDescription())
+                                                .courseStartDate(course.getStartDate())
+                                                        .courseEndDate(course.getEndDate())
+                                                                .emails(emailsMember)
+                                                                        .build();
+        return notificationDto;
+    }
+
+    private static void validateFinishEnrollment(Course course) {
+        if(Course.Status.INACTIVE.equals(course.getStatus())){
+            throw new CourseException(CourseError.COURSE_ALREADY_FINISHED);
+        }
     }
 
 

@@ -13,7 +13,8 @@ public enum CourseError {
 
     COURSE_ACTIVE_ERROR("COURSE with participants limit reacg cannot have ACTIVE status"),
     COURSE_IS_NOT_ACTIVE("COURSE is no longer ACTIVE!"),
-    STUDENT_ALREADY_ENROLLED("Student is already enrolled!");
+    STUDENT_ALREADY_ENROLLED("Student is already enrolled!"),
+    COURSE_ALREADY_FINISHED("Course enrollment is already finished!");
 
     private String message;
 

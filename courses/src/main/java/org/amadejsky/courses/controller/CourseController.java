@@ -68,5 +68,10 @@ public class CourseController {
     public List<StudentDto> getCourseMembers(@PathVariable String code){
         return courseService.getCourseMemebers(code);
     }
+    @PostMapping("/{code}/finish-enroll")
+    public ResponseEntity<?> finishCourseEnrollment(@PathVariable String code){
+        courseService.finishEnroll(code);
+        return ResponseEntity.ok().build();
+    }
 
 }
