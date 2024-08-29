@@ -5,6 +5,7 @@ import org.amadejsky.courses.model.Course;
 import org.amadejsky.courses.model.dto.Student;
 import org.amadejsky.courses.service.CourseService;
 import org.amadejsky.courses.service.StudentServiceClient;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -36,17 +37,23 @@ public class CourseController {
     }
 
     @DeleteMapping("/{code}")
-    public void deleteStudent(@PathVariable String code){
+    public void deleteCourse(@PathVariable String code){
         courseService.deleteCourse(code);
     }
-    @GetMapping("/students")
-    public List<Student> getStudents(){
-        return studentServiceClient.getStudents();
+
+//    @GetMapping("/students")
+//    public List<Student> getStudents(){
+//        return studentServiceClient.getStudents();
+//    }
+//    @GetMapping("/students/{studentId}")
+//    public Student getStudentById(@PathVariable Long studentId) {
+//    return studentServiceClient.getStudentById(studentId);
+//    }
+    @PostMapping("/{courseCode}/student/{studentId}")
+    public ResponseEntity<?> courseEnrollment(@PathVariable String courseCode, @PathVariable Long studentId){
+        courseService.enrollStudent(studentId, courseCode);
+        return ResponseEntity.ok().build();
     }
-@GetMapping("/students/{studentId}")
-public Student getStudentById(@PathVariable Long studentId) {
-    return studentServiceClient.getStudentById(studentId);
-}
 
 
 }

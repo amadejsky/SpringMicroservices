@@ -59,6 +59,12 @@ public class Course {
             throw new CourseException(CourseError.COURSE_ACTIVE_ERROR);
         }
     }
+    public void incrementParticipantNumber(){
+        getParticipantsCounter++;
+        if(getGetParticipantsCounter().equals(getParticipantsLimit())){
+            setStatus(Course.Status.FULL);
+        }
+    }
     private void validateCourseDate(){
         if(startDate.isAfter(endDate)){
             throw new CourseException(CourseError.COURSE_START_DATE_INVALID);

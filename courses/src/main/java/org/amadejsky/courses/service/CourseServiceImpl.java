@@ -3,6 +3,7 @@ package org.amadejsky.courses.service;
 import org.amadejsky.courses.exception.CourseError;
 import org.amadejsky.courses.exception.CourseException;
 import org.amadejsky.courses.model.Course;
+import org.amadejsky.courses.model.CourseMember;
 import org.amadejsky.courses.model.dto.Student;
 import org.amadejsky.courses.repository.CourseRepository;
 import org.apache.commons.lang.StringUtils;
@@ -129,25 +130,29 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public void enrollStudent(Long studentId, String courseCode) {
         Course course = getCourse(courseCode);
-        if(!Course.Status.ACTIVE.equals(course.getStatus())){
-            throw new CourseException(CourseError.COURSE_IS_NOT_ACTIVE);
-        }
-        if(course.getParticipantsLimit()<=course.getGetParticipantsCounter()){
-            throw new CourseException(CourseError.COURSE_PARTICIPANTS_AMOUNT_EXCEEEDED);
-        }
+        validateCourseStatus(course);
         Student student = studentServiceClient.getStudentById(studentId);
-        if(!Course.Status.ACTIVE.equals(student.getStatus())){
+        validateStudentBeforeCourseEnrollment(student, course);
+        course.incrementParticipantNumber();
+        course.getCourseMemberList().add(new CourseMember(student.getEmail()));
+        courseRepository.save(course);
+    }
+
+    private static void validateStudentBeforeCourseEnrollment(Student student, Course course) {
+        if(!Student.Status.ACTIVE.equals(student.getStatus())){
             throw new CourseException(CourseError.STUDENT_ACCOUNT_IS_INACTIVE);
         }
         if(course.getCourseMemberList().stream()
                 .anyMatch(member-> student.getEmail().equals(member.getEmail()))){
             throw new CourseException(CourseError.STUDENT_ALREADY_ENROLLED);
         }
-
-
-        course.setGetParticipantsCounter(course.getGetParticipantsCounter()+1);
     }
 
+    private static void validateCourseStatus(Course course) {
+        if(!Course.Status.ACTIVE.equals(course.getStatus())){
+            throw new CourseException(CourseError.COURSE_IS_NOT_ACTIVE);
+        }
+    }
 
 
 }

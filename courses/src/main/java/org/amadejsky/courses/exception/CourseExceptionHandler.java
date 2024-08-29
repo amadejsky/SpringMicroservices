@@ -20,6 +20,12 @@ public class CourseExceptionHandler {
             httpStatus = HttpStatus.CONFLICT;
         else if(CourseError.COURSE_ACTIVE_ERROR.equals(e.getCourseError()))
             httpStatus = HttpStatus.CONFLICT;
+        else if(CourseError.STUDENT_ACCOUNT_IS_INACTIVE.equals(e.getCourseError())
+        || CourseError.COURSE_IS_NOT_ACTIVE.equals(e.getCourseError()))
+            httpStatus = httpStatus.BAD_REQUEST;
+        else if(CourseError.STUDENT_ALREADY_ENROLLED.equals(e.getCourseError()))
+            httpStatus = httpStatus.CONFLICT;
+
         return ResponseEntity.status(httpStatus).body(new ErrorInfo(e.getCourseError().getMessage()));
     }
 }
