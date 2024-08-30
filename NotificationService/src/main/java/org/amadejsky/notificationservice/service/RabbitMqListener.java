@@ -9,7 +9,11 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class RabbitMqListener {
 
+    private final EmailSender emailSender;
 
+    public RabbitMqListener(EmailSender emailSender) {
+        this.emailSender = emailSender;
+    }
 
     @RabbitListener(queues="enrollment_finish")
     public void handleFinishEnroll(NotificationDto notificationDto){
